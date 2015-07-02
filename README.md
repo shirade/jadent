@@ -5,6 +5,10 @@ Inspired by [https://github.com/jgallen23/clientjade](https://github.com/jgallen
 
 ## Getting started
 ```bash
+$ npm install jadent
+
+# or
+
 $ git clone git@github.com:shirade/jadent
 $ cd jadent
 $ npm install
@@ -25,6 +29,7 @@ $ jadent --help
     -V, --version                output the version number
     -w, --watch                  watch folder for file changes
     -n, --namespace <namespace>  add namespace and wrap by nameless immediately-invoked function
+    -u, --uglify                 uglify client side template
 
 
 
@@ -92,13 +97,13 @@ Add namespace and wrap by nameless immediately-invoked function
 
 ##### Example
 ```bash
-$ jadent --namespace namespace ./views ./public/javascripts
+$ jadent --namespace namespace ./views/client ./public/javascripts
 ```
 
-Two jade templates are in ./views.
+Two jade templates are in ./views/client.
 
 ```jade
-// ./views/index.jade
+// ./views/client/index.jade
 doctype html
 html(lang="en")
   head
@@ -109,7 +114,7 @@ html(lang="en")
 ```
 
 ```jade
-// ./views/sigin.jade
+// ./views/client/sigin.jade
 doctype html
 html(lang="en")
   head
@@ -148,4 +153,12 @@ namespace.jadent = {};
     return buf.join("");
   }
 })(namespace.jadent);
+```
+
+#### -u, --uglify
+Uglify client side template javascript file
+
+##### Example
+```bash
+$ jadent --uglify ./views/client ./public/javascripts
 ```

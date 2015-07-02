@@ -4,13 +4,15 @@ var path = require('path');
 var program = require('commander');
 var chokidar = require('chokidar');
 var jade = require('jade');
-var jsBeautify = require('js-beautify');
+var beautify = require('js-beautify');
+var uglify = require('uglify-js');
 
 program
   .version(require('./../package.json').version)
   .usage('[options] source target')
   .option('-w, --watch', 'watch folder for file changes')
-  .option('-n, --namespace <namespace>', 'add namespace and wrap by nameless immediately-invoked function');
+  .option('-n, --namespace <namespace>', 'add namespace and wrap by nameless immediately-invoked function')
+  .option('-u, --uglify', 'uglify client side template');
 
 program.on('--help', function () {
   console.log('\n');
@@ -65,7 +67,7 @@ if (program.args.length === 2) {
   var source = program.args[0];
   var target = program.args[1];
 
-  if (fs.statSync(target).isDirectory()) {
+  if (fs.existsSync(target) && fs.statSync(target).isDirectory()) {
     target = path.join(target, 'jadent.js');
   }
 
@@ -74,8 +76,8 @@ if (program.args.length === 2) {
     collectJadeFilepath(source, paths);
     compile(paths, function(error, result) {
       // jshint camelcase:false
-      result = jsBeautify(result, {indent_size: 2});
-      fs.writeFileSync(target, result);
+      result = program.uglify ? uglify.minify(result, { fromString: true }).code : beautify(result, { indent_size: 2 });
+      fs.writeFileSync(target, result.toString());
       console.log('Created ' + target + '\n');
     });
   };

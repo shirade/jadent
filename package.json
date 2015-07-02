@@ -1,6 +1,6 @@
 {
   "name": "jadent",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A command line tool to compilie jade templates for use in running on browsers.",
   "repository": {
     "type": "git",
@@ -17,10 +17,14 @@
     "url": "https://github.com/shirade/jadent/issues"
   },
   "homepage": "https://github.com/shirade/jadent#readme",
+  "bin": {
+    "jadent": "./bin/jadent"
+    },
   "dependencies": {
     "chokidar": "^1.0.3",
     "commander": "^2.8.1",
     "jade": "^1.11.0",
-    "js-beautify": "^1.5.10"
+    "js-beautify": "^1.5.10",
+    "uglify-js": "^2.4.23"
   }
 }
