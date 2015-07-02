@@ -1,0 +1,26 @@
+{
+  "name": "jadent",
+  "version": "0.0.1",
+  "description": "A command line tool to compilie jade templates for use in running on browsers.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shirade/jadent.git"
+  },
+  "keywords": [
+    "jade",
+    "client",
+    "template"
+  ],
+  "author": "Satoshi HIRADE <shirade222@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shirade/jadent/issues"
+  },
+  "homepage": "https://github.com/shirade/jadent#readme",
+  "dependencies": {
+    "chokidar": "^1.0.3",
+    "commander": "^2.8.1",
+    "jade": "^1.11.0",
+    "js-beautify": "^1.5.10"
+  }
+}

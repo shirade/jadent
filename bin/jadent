@@ -1,0 +1,103 @@
+#!/usr/bin/env node
+var fs = require('fs');
+var path = require('path');
+var program = require('commander');
+var chokidar = require('chokidar');
+var jade = require('jade');
+var jsBeautify = require('js-beautify');
+
+program
+  .version(require('./../package.json').version)
+  .usage('[options] source target')
+  .option('-w, --watch', 'watch folder for file changes')
+  .option('-n, --namespace <namespace>', 'add namespace and wrap by nameless immediately-invoked function');
+
+program.on('--help', function () {
+  console.log('\n');
+  console.log('  Examples:');
+  console.log('\n');
+  console.log('    jadent views/client public/javascripts');
+  console.log('      -> compile jade templates in views/client into public/javascripts/jadent.js');
+  console.log('\n');
+  console.log('    jadent views/client/index.jade public/javascripts');
+  console.log('      -> compile views/client/index.jade into public/javascripts/jadent.js');
+  console.log('\n');
+  console.log('    jadent views/client public/javascripts/index.js');
+  console.log('      -> compile jade templates in views/client into public/javascripts/index.js');
+  console.log('\n');
+  console.log('    jadent views/client/index.jade public/javascripts/index.js');
+  console.log('      -> compile views/client/index.jade into public/javascripts/index.js');
+  console.log('\n');
+});
+
+program.parse(process.argv);
+
+var compile = function (paths, callback) {
+  var js = [];
+  if (program.namespace) {
+    js.push('var ' + program.namespace + ' = ' + program.namespace + ' || {};');
+    js.push('' + program.namespace + '.jadent = {};');
+    js.push('(function (jadent) {');
+  } else {
+    js.push('var jadent = {};');
+  }
+  paths.forEach(function (filepath) {
+    var fn = jade.compileFileClient(filepath, { filename: filepath });
+    js.push(fn.replace(/function template/, 'jadent["' + path.basename(filepath, '.jade') + '"] = function'));
+  });
+  if (program.namespace) {
+    js.push('})(' + program.namespace + '.jadent);');
+  }
+  callback(null, js.join('\n'));
+};
+
+var collectJadeFilepath = function (source, paths) {
+  if (fs.statSync(source).isDirectory()) {
+     fs.readdirSync(source).forEach(function (filename) {
+       collectJadeFilepath(path.join(source, filename), paths);
+     });
+  } else if (path.extname(source) === '.jade') {
+    paths.push(source);
+  }
+};
+
+if (program.args.length === 2) {
+  var source = program.args[0];
+  var target = program.args[1];
+
+  if (fs.statSync(target).isDirectory()) {
+    target = path.join(target, 'jadent.js');
+  }
+
+  var execute = function () {
+    var paths = [];
+    collectJadeFilepath(source, paths);
+    compile(paths, function(error, result) {
+      // jshint camelcase:false
+      result = jsBeautify(result, {indent_size: 2});
+      fs.writeFileSync(target, result);
+      console.log('Created ' + target + '\n');
+    });
+  };
+
+  if (program.watch) {
+    console.log('\nStarting Watching folder ' + source + '\n');
+    var watcher = chokidar.watch(source, {persistent: true});  
+    watcher.on('add', function (path) {
+      console.log('File added: ' + path);
+      execute();
+    }).on('change', function (path) {
+      console.log('File changed: ' + path);
+      execute();
+    }).on('unlink', function (path) {
+      console.log('File removed: ' + path);
+      execute();
+    });
+  } else {
+    execute();
+  }
+} else {
+  program.help();
+}
+
+process.on('uncaughtException', console.error);
