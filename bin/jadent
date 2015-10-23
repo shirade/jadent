@@ -12,7 +12,8 @@ program
   .usage('[options] source target')
   .option('-w, --watch', 'watch folder for file changes')
   .option('-n, --namespace <namespace>', 'add namespace and wrap by nameless immediately-invoked function')
-  .option('-u, --uglify', 'uglify client side template');
+  .option('-u, --uglify', 'uglify client side template')
+  .option('-r, --runtime', 'include jade runtime which is necessary for client browser');
 
 program.on('--help', function () {
   console.log('\n');
@@ -36,6 +37,10 @@ program.parse(process.argv);
 
 var compile = function (paths, callback) {
   var js = [];
+  if (program.runtime) {
+    var runtime = fs.readFileSync(path.join(__dirname, '../../jade/runtime.js'), 'utf8');
+    js.push(runtime);
+  }
   if (program.namespace) {
     js.push('var ' + program.namespace + ' = ' + program.namespace + ' || {};');
     js.push('' + program.namespace + '.jadent = {};');
@@ -84,7 +89,7 @@ if (program.args.length === 2) {
 
   if (program.watch) {
     console.log('\nStarting Watching folder ' + source + '\n');
-    var watcher = chokidar.watch(source, {persistent: true});  
+    var watcher = chokidar.watch(source, {persistent: true});
     watcher.on('add', function (path) {
       console.log('File added: ' + path);
       execute();

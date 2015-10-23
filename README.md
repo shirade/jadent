@@ -6,13 +6,6 @@ Inspired by [https://github.com/jgallen23/clientjade](https://github.com/jgallen
 ## Getting started
 ```bash
 $ npm install jadent
-
-# or
-
-$ git clone git@github.com:shirade/jadent
-$ cd jadent
-$ npm install
-$ ./bin/jadent ...
 ```
 
 ## How to use
@@ -30,7 +23,7 @@ $ jadent --help
     -w, --watch                  watch folder for file changes
     -n, --namespace <namespace>  add namespace and wrap by nameless immediately-invoked function
     -u, --uglify                 uglify client side template
-
+    -r, --runtime                include jade runtime which is necessary for client browser
 
 
   Examples:
@@ -70,7 +63,7 @@ jadent["index"] = function(locals) {
 Watch folder for file changes in source folder/file to recreate templates
 
 ##### Example
-Two jade templates are in ./views/, and they will be compiled whenever they were modified.
+Two jade templates are in ./views/, and they are compiled whenever they are modified.
 
 ```bash
 $ jadent --watch ./views/client ./public/javascripts
@@ -161,4 +154,12 @@ Uglify client side template javascript file
 ##### Example
 ```bash
 $ jadent --uglify ./views/client ./public/javascripts
+```
+
+#### -r, --runtime
+Include jade runtime.js in target file
+
+##### Example
+```bash
+$ jadent --runtime ./views/client ./public/javascripts
 ```
