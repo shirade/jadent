@@ -80,6 +80,9 @@ if (program.args.length === 2) {
     var paths = [];
     collectJadeFilepath(source, paths);
     compile(paths, function(error, result) {
+      if (error) {
+        throw error;
+      }
       // jshint camelcase:false
       result = program.uglify ? uglify.minify(result, { fromString: true }).code : beautify(result, { indent_size: 2 });
       fs.writeFileSync(target, result.toString());
