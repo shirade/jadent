@@ -1,7 +1,7 @@
 {
   "name": "jadent",
   "version": "0.0.10",
-  "description": "A command line tool to compilie jade templates for use in running on browsers.",
+  "description": "A command line tool to compile jade templates for use in running on browsers.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shirade/jadent.git"

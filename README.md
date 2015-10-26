@@ -1,15 +1,15 @@
 # jadent
-A command line tool to compilie jade templates for use in running on browsers.
+A command line tool to compile jade templates for use in running on browsers.
 
 Inspired by [https://github.com/jgallen23/clientjade](https://github.com/jgallen23/clientjade).
 
-## Getting started
+## Installation
 ```bash
 $ npm install jadent
 ```
 
-## How to use
-### Basic usage
+## Usage
+### Basic
 
 ```bash
 $ jadent --help
@@ -45,7 +45,7 @@ $ jadent --help
       -> compile views/client/index.jade into public/javascripts/index.js
 ```
 
-```jacascript
+```javascript
 var jadent = {};
 jadent["index"] = function(locals) {
   var buf = [];
@@ -59,6 +59,7 @@ jadent["index"] = function(locals) {
 }
 ```
 
+### Options
 #### -w, --watch
 Watch folder for file changes in source folder/file to recreate templates
 
